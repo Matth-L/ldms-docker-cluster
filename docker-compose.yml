@@ -39,15 +39,12 @@ services:
     image: slurm-docker-cluster
     build:
       context: .
-      args:
-        SLURM_TAG: ${SLURM_TAG}
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
     privileged: true
     volumes:
       - etc_munge:/etc/munge
-      - ./slurm:/etc/slurm
       - var_log_slurm:/var/log/slurm
       - var_spool_slurm:/var/spool/slurmctld
     expose:
@@ -65,7 +62,6 @@ services:
     privileged: true
     volumes:
       - etc_munge:/etc/munge
-      - ./slurm:/etc/slurm
       - ./images:/images
       - ./shared_data:/data
       - var_log_slurm:/var/log/slurm

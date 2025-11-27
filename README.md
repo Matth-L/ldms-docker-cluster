@@ -10,7 +10,6 @@ Le noeud de login est `slurmctld`. Lorsqu'un job est lancé, un daemon LDMS est 
 # TLDR des commandes:
 
 ```sh 
-source .env
 cd ldms
 docker build --network=host -t ldms-agg-kafka .
 cd ..

@@ -36,9 +36,10 @@ services:
       - slurm-network
 
   slurmdbd:
-    image: slurm-docker-cluster
     build:
       context: .
+      dockerfile: ./docker/Dockerfile
+    image: slurm-docker-cluster
     command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
@@ -63,7 +64,7 @@ services:
     volumes:
       - etc_munge:/etc/munge
       - ./images:/images
-      - ./shared_data:/data
+      - ./shared/data:/shared/data
       - var_log_slurm:/var/log/slurm
     expose:
       - "6817"

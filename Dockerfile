@@ -195,6 +195,8 @@ COPY ./slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 
 COPY ./slurm/cgroup.conf /etc/slurm/cgroup.conf
 
+COPY ./slurm/scripts /etc/slurm/scripts/
+
 RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chmod 600 /etc/slurm/slurmdbd.conf \

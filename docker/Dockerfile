@@ -160,6 +160,7 @@ RUN set -ex \
         jansson \
         readline \
         libevent \
+        docker \
         && dnf clean all \
         && rm -rf /var/cache/dnf \
         && pip3 install Cython nose
@@ -175,8 +176,6 @@ COPY --from=builder /etc/slurm /etc/slurm
 COPY --from=builder /opt/ovis /opt/ovis
 # gosu for handling permissions
 COPY --from=tianon/gosu /gosu /usr/local/bin/
-
-
 
 # Setup users and permissions
 RUN set -x \
@@ -214,6 +213,7 @@ COPY ./slurm/cgroup.conf /etc/slurm/cgroup.conf
 # For LDMS
 COPY ./slurm/plugstack.conf /etc/slurm/plugstack.conf
 
+COPY ./slurm/scripts /etc/slurm/scripts/
 
 RUN set -x \
 && chown slurm:slurm /etc/slurm/slurmdbd.conf \

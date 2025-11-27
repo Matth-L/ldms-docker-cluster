@@ -168,7 +168,6 @@ RUN set -ex \
 COPY --from=builder /usr/local/pmix /usr/local/pmix
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/local/lib /usr/local/lib
-COPY --from=builder /etc/slurm /etc/slurm
 COPY --from=builder /usr/bin/ /usr/bin/
 COPY --from=builder /usr/sbin/ /usr/sbin/
 COPY --from=builder /usr/lib64/ /usr/lib64/

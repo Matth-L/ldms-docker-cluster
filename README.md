@@ -1,5 +1,4 @@
-# ldms-docker-cluster
-
+# Proof of concept : LDMS
 This project is a fork of : https://github.com/giovtorres/slurm-docker-cluster.
 
 It uses LDMS : https://ovis-hpc.readthedocs.io/projects/ldms/en/latest/index.html

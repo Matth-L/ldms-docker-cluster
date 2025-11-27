@@ -16,9 +16,27 @@ docker build -t slurm-docker-cluster --network=host -f docker/Dockerfile .
 ## Arborescence explanation
 
 ```
-
+.
+.
+├── 📁 docker
+├── docker-compose.yml
+├── docker-entrypoint.sh
+├── 📁 (md)
+├── README.md
+├── 📁 scripts
+├── 📁 shared
+|-------- 📁compute | 📁 data
+└── 📁 slurm
 ```
 
+- `docker` -> Dockerfile for the main image; named `slurm-docker-cluster`
+- `md` -> all the file located below in the Example section are written here
+- `scripts` -> shell script to create user [scripts explanation](./scripts/README.md)
+- `shared` -> a shared folder for all the node. The compute folders is only mounted on the `compute` node, .ie `c1`, `c2`, `c3`. The folder `data` is mounted as is in the `slurmctld` service.
+
+The mount is made using the docker compose `volume` method.
+
+> All the subfolders contains README.md
 # Example :
 
 - LDMS manual launch that gathers metrics and store them in `.csv` : [here](./md/ldms_csv.md)

@@ -17,7 +17,6 @@ docker build -t slurm-docker-cluster --network=host -f docker/Dockerfile .
 
 ```
 .
-.
 ├── 📁 docker
 ├── docker-compose.yml
 ├── docker-entrypoint.sh
@@ -37,7 +36,8 @@ docker build -t slurm-docker-cluster --network=host -f docker/Dockerfile .
 The mount is made using the docker compose `volume` method.
 
 > All the subfolders contains README.md
-# Example :
+
+## Example :
 
 - LDMS manual launch that gathers metrics and store them in `.csv` : [here](./md/ldms_csv.md)
 - LDMS manual launch that gathers metrics and launch them in Kafka : [here](./md/ldms_kafka.md)

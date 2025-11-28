@@ -14,4 +14,4 @@ id > /tmp/prolog_user.txt
 ldmsd -x sock:10001 \
 -l /tmp/ldms_${SLURM_JOB_USER}_${HOSTNAME}.log \
 -c /etc/slurm/scripts/sampler.conf \
--r /tmp/ldms_${HOSTNAME}.pid
+-r /tmp/ldms_${HOSTNAME}.pid &

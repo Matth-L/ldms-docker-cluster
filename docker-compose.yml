@@ -18,6 +18,11 @@ x-compute-node: &compute
   environment: # fix dbus
     - DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket
 
+################################################################################
+################################################################################
+### SERVICES
+################################################################################
+################################################################################
 
 services:
   mysql:
@@ -35,12 +40,12 @@ services:
     networks:
       - slurm-network
 
+  # Contains the slurm database
   slurmdbd:
+    image: slurm-docker-cluster
+    command: slurmdbd
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
-    image: slurm-docker-cluster
-    command: ["slurmdbd"]
     container_name: slurmdbd
     hostname: slurmdbd
     privileged: true
@@ -57,7 +62,7 @@ services:
 
   slurmctld:
     image: slurm-docker-cluster
-    command: ["slurmctld"]
+    command: slurmctld
     container_name: slurmctld
     hostname: slurmctld
     privileged: true
@@ -78,19 +83,16 @@ services:
     << : *compute
     hostname: c1
     container_name: c1
-    cpuset : "1"
 
   c2:
     << : *compute
     hostname: c2
     container_name: c2
-    cpuset : "2"
 
   c3:
     << : *compute
     hostname: c3
     container_name: c3
-    cpuset : "3"
 
 
   broker:

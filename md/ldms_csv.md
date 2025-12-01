@@ -19,10 +19,7 @@ export LDMSD_PLUGIN_LIBPATH=$OVIS/lib/ovis-ldms
 export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
 export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
-```
-Finally launch the aggregator :
 
-```sh
 ldmsd -x sock:20001 -c /etc/slurm/scripts/agg.conf &
 ```
 
@@ -45,6 +42,13 @@ docker exec -it c1 bash
 Launch the sampler, that will stream the data on the port 10001 with the config file [`sampler.conf`](./slurm/scripts/sampler.conf). This gathers metrics from `c1`, the instance name is empty because it expects slurm data, but it still works.
 
 ```sh
+OVIS=/opt/ovis
+export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
+export LDMSD_PLUGIN_LIBPATH=$OVIS/lib/ovis-ldms
+export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
+export PATH=$OVIS/sbin:$OVIS/bin:$PATH
+export PYTHONPATH=$OVIS/lib/python3.9/site-packages
+
 ldmsd -x sock:10001 -c /etc/slurm/scripts/sampler.conf &
 ```
 

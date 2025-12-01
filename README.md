@@ -9,9 +9,7 @@ Made during my intership at CEA.
 
 ## Build
 
-```sh
-docker build -t slurm-docker-cluster --network=host -f docker/Dockerfile .
-```
+[See here for the docker install](./md/docker.md)
 
 ## Arborescence explanation
 

@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-
 echo "---> Ensuring required directories and permissions..."
 mkdir -p /var/log/slurm /var/run /var/spool/slurmctld /var/run/munge
 chown -R slurm:slurm /var/log/slurm /var/spool/slurmctld
@@ -43,7 +42,7 @@ if [ "$1" = "slurmctld" ]; then
     echo "---> slurmdbd is now active ..."
     echo "---> Starting the Slurm Controller Daemon (slurmctld) ..."
     
-    exec gosu slurm /usr/sbin/slurmctld -Dvvv 
+    exec gosu slurm /usr/sbin/slurmctld -Dvvv
 fi
 
 if [ "$1" = "slurmd" ]; then

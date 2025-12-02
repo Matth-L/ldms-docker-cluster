@@ -11,6 +11,7 @@ Made during my intership at CEA.
 
 ```sh
 docker build -t slurm-docker-cluster --network=host .
+docker build -t logstash-with-opensearch-plugins --network=host logstash #building logstash
 docker compose up -d
 ```
 
@@ -56,6 +57,7 @@ An anchor is used for the compute node, even though the number of compute node i
 ```sh
 # pwd : ldms-docker-cluster
 docker build -t slurm-docker-cluster --network=host .
+docker build -t logstash-with-opensearch-plugins --network=host logstash 
 ```
 
 

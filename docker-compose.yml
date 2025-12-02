@@ -122,7 +122,7 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.12.0
+    image: logstash-with-opensearch-plugins:latest
     container_name: logstash
     hostname: logstash
     volumes:
@@ -136,6 +136,52 @@ services:
       LS_JAVA_OPTS: "-Xms256m -Xmx256m"
       XPACK_MONITORING_ENABLED: "false"
 
+
+  opensearch-node1:
+    image: opensearchproject/opensearch:3
+    container_name: opensearch-node1
+    hostname: opensearch-node1
+    environment:
+      discovery.type: single-node
+      node.name: opensearch-node1
+      bootstrap.memory_lock: true
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: SecureP@ssword1
+      # this is a poc, security is disabled
+      plugins.security.disabled: "true"
+      plugins.security.ssl.http.enabled: "false"
+      plugins.security.ssl.transport.enabled: "false"
+      plugins.security.allow_default_init_securityindex: "true"
+      plugins.security.authcz.admin_dn: "[]"  
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600
+    networks:
+      - slurm-network
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:3
+    container_name: opensearch-dashboards
+    hostname: opensearch-dashboards
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch-node1:9200"]'
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+      # Set the value to true to enable multiple data source feature
+      data_source.enabled: true
+      # Set the value to true to enable workspace feature
+      workspace.enabled: true
+      # Set the value to true to enable explore feature
+      explore.enabled: true
+    ports:
+      - 5601:5601
+    networks:
+      - slurm-network
+    depends_on:
+      - opensearch-node1
+
+
 volumes:
   etc_munge:
   slurm_jobdir:
@@ -143,6 +189,7 @@ volumes:
   var_log_slurm:
   var_run_slurm:
   var_spool_slurm:
+  opensearch-data:
 networks:
   slurm-network:
     driver: bridge

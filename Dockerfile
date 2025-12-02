@@ -164,6 +164,8 @@ RUN set -ex\
     glib2 \
     glib2-devel \
     byacc \
+    librdkafka \
+    librdkafka-devel \
     python3-docutils \
     jansson \
     jansson-devel \

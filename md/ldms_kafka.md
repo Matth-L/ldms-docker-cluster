@@ -21,8 +21,13 @@ export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
 
-ldmsd -x sock:20001 -c /etc/slurm/scripts/agg_kafka.conf &
+ldmsd -x sock:20001 -c /shared/ldms_conf/agg_kafka.conf &
+
+# check if the daemon is up
+ldms_ls -h ${HOSTNAME} -x sock -p 20001 -v
+
 ```
+
 
 ## Step 2 : Manually launch the sampler
 
@@ -43,12 +48,9 @@ export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
 
-ldmsd -x sock:10001 -c /etc/slurm/scripts/sampler.conf &
-```
+ldmsd -x sock:10001 -c /shared/ldms_conf/sampler.conf &
 
-Check if this command works with :
-
-```sh
+# check if the daemon is up
 ldms_ls -h ${HOSTNAME} -x sock -p 10001 -v
 ```
 

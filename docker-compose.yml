@@ -9,6 +9,7 @@ x-compute-node: &compute
     - var_log_slurm:/var/log/slurm
     - /run/dbus/system_bus_socket:/host/run/dbus/system_bus_socket # fix dbus
     - ./shared/compute:/shared/compute
+    - ./ldms_conf:/shared/ldms_conf
   expose:
     - "6818"
   depends_on:
@@ -71,6 +72,7 @@ services:
       - ./images:/images
       - ./shared/data:/shared/data
       - var_log_slurm:/var/log/slurm
+      - ./ldms_conf:/shared/ldms_conf
     expose:
       - "6817"
     depends_on:
@@ -119,6 +121,21 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.12.0
+    container_name: logstash
+    hostname: logstash
+    volumes:
+      - ./logstash/config/logstash.yaml:/usr/share/logstash/config/logstash.yaml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    depends_on:
+      - broker
+    networks:
+      - slurm-network
+    environment:
+      LS_JAVA_OPTS: "-Xms256m -Xmx256m"
+      XPACK_MONITORING_ENABLED: "false"
 
 volumes:
   etc_munge:

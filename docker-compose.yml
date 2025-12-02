@@ -69,7 +69,6 @@ services:
     privileged: true
     volumes:
       - etc_munge:/etc/munge
-      - ./images:/images
       - ./shared/data:/shared/data
       - var_log_slurm:/var/log/slurm
       - ./ldms_conf:/shared/ldms_conf

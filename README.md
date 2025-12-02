@@ -15,18 +15,21 @@ Made during my intership at CEA.
 
 ```
 .
-├── 📁 docker
 ├── docker-compose.yml
 ├── docker-entrypoint.sh
-├── 📁 (md)
+├── Dockerfile
+├── ldms_conf
+├── logstash
+├── md
 ├── README.md
-├── 📁 scripts
-├── 📁 shared
-|-------- 📁compute | 📁 data
-└── 📁 slurm
-```
+├── scripts
+├── shared
+└── slurm
 
-- `docker` -> Dockerfile for the main image; named `slurm-docker-cluster`
+```
+- `Dockerfile`, `docker-compose.yml`, `docker-entrypoint.sh` the main images is `slurm-docker-cluster`, it builds openmpi, slurm, pmix, ldms and so on.
+- `ldms_conf` -> all the config file related to the ldms daemon, whether it be sampler or aggregator config are here
+- `logstash` -> logstash config file to get data from the Kafka broker (the LDMS aggregator can send data to the broker if `ldms_conf/agg_kafka.conf` is used, see [here](./md/ldms_kafka.md))
 - `md` -> all the file located below in the Example section are written here
 - `scripts` -> shell script to create user [scripts explanation](./scripts/README.md)
 - `shared` -> a shared folder for all the node. The compute folders is only mounted on the `compute` node, .ie `c1`, `c2`, `c3`. The folder `data` is mounted as is in the `slurmctld` service.

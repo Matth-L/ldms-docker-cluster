@@ -20,7 +20,7 @@ export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
 export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
-ldmsd -x sock:20001 -c /shared/ldms_conf/agg.conf &
+ldmsd -x sock:20001 -c /ldms_conf/agg.conf &
 ```
 
 This launches the aggregator on the port 20001 with the config file [`agg.conf`](./slurm/scripts/agg.conf). This scripts gather metrics and put them in `/data/store/store_csv/` in `slurmctld`.
@@ -49,7 +49,7 @@ export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
 export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
-ldmsd -x sock:10001 -c /shared/ldms_conf/sampler.conf &
+ldmsd -x sock:10001 -c /ldms_conf/sampler.conf &
 ```
 
 Check if this command works with :

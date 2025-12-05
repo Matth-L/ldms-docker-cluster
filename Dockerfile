@@ -190,12 +190,26 @@ RUN set -ex \
 ###################################################
 ###################################################
 ###################################################
-# Stage 4 (conf):  Copy slurm conf
+# Stage 4: Additionnal package for test
 ###################################################
 ###################################################
 ###################################################
 
-FROM ldms AS conf
+FROM ldms AS stress
+
+RUN dnf -y install epel-release && \
+    dnf -y install stress && \
+    dnf clean all
+
+###################################################
+###################################################
+###################################################
+# Stage 5 (conf):  Copy slurm conf
+###################################################
+###################################################
+###################################################
+
+FROM stress AS conf
 
 COPY ./slurm/slurm.conf /etc/slurm/slurm.conf
 
@@ -203,28 +217,13 @@ COPY ./slurm/slurmdbd.conf /etc/slurm/slurmdbd.conf
 
 COPY ./slurm/cgroup.conf /etc/slurm/cgroup.conf
 
-COPY ./slurm/plugstack.conf /etc/slurm/plugstack.conf
+# to use slurm_sampler option in LDMS
+# COPY ./slurm/plugstack.conf /etc/slurm/plugstack.conf
 
 RUN set -x \
     && chown slurm:slurm /etc/slurm/slurmdbd.conf \
     && chmod 600 /etc/slurm/slurmdbd.conf \
     && chmod 644 /etc/slurm/slurm.conf
-
-
-###################################################
-###################################################
-###################################################
-# Stage 5: Additionnal package for test
-###################################################
-###################################################
-###################################################
-
-FROM conf AS stress
-
-RUN dnf -y install epel-release && \
-    dnf -y install stress && \
-    dnf clean all
-
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

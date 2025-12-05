@@ -9,7 +9,7 @@ x-compute-node: &compute
     - var_log_slurm:/var/log/slurm
     - /run/dbus/system_bus_socket:/host/run/dbus/system_bus_socket # fix dbus
     - ./shared/compute:/shared/compute
-    - ./ldms_conf:/shared/ldms_conf
+    - ./ldms_conf:/ldms_conf
   expose:
     - "6818"
   depends_on:
@@ -70,8 +70,9 @@ services:
     volumes:
       - etc_munge:/etc/munge
       - ./shared/data:/shared/data
+      - ./shared/compute:/shared/compute
       - var_log_slurm:/var/log/slurm
-      - ./ldms_conf:/shared/ldms_conf
+      - ./ldms_conf:/ldms_conf
     expose:
       - "6817"
     depends_on:

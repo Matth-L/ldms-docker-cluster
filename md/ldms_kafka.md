@@ -21,7 +21,7 @@ export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
 
-ldmsd -x sock:20001 -c /shared/ldms_conf/agg_kafka.conf &
+ldmsd -x sock:20001 -c /ldms_conf/agg_kafka.conf &
 
 # check if the daemon is up
 ldms_ls -h ${HOSTNAME} -x sock -p 20001 -v
@@ -48,7 +48,7 @@ export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
 
-ldmsd -x sock:10001 -c /shared/ldms_conf/sampler.conf &
+ldmsd -x sock:10001 -c /ldms_conf/sampler.conf &
 
 # check if the daemon is up
 ldms_ls -h ${HOSTNAME} -x sock -p 10001 -v

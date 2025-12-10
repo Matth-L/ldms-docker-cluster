@@ -1,0 +1,21 @@
+# https://docs.opensearch.org/latest/security/configuration/yaml/#internal_usersyml
+
+_meta:
+  type: "internalusers"
+  config_version: 2
+# NOT USED ATM2
+# password = "SecureP@ssword1" for everyone
+
+admin:
+  hash: "$2y$12$TWlRCS7p0SG8ZOuHwWHFGeJbc4fXPZhA0H7r0DZpkj0xPaawHCAba"
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Demo admin user"
+
+test-user:
+  hash: "$2y$12$TWlRCS7p0SG8ZOuHwWHFGeJbc4fXPZhA0H7r0DZpkj0xPaawHCAba"
+  backend_roles:
+    - "test-backend-role"
+    - "kibanauser"
+  description: "test user user"

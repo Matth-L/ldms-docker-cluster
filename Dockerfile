@@ -181,7 +181,7 @@ RUN set -ex \
     && ./autogen.sh \
     && mkdir build \
     && cd build \
-    && ../configure --prefix=/opt/ovis \
+    && ../configure --prefix=/opt/ovis --with-slurm=/usr \
     && make -j $(nproc) \
     && make install \
     && cd / \

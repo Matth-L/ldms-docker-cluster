@@ -1,14 +1,19 @@
 #!/bin/bash
 
-# loading ldms
-OVIS=/opt/ovis
-export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
-export LDMSD_PLUGIN_LIBPATH=$OVIS/lib/ovis-ldms
-export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
-export PATH=$OVIS/sbin:$OVIS/bin:$PATH
-export PYTHONPATH=$OVIS/lib/python3.9/site-packages
+# 1. Define the same PID file path
+PID_FILE="/tmp/ldmsd_${SLURM_JOBID}.pid"
 
-pid=$(cat /tmp/ldms_${HOSTNAME}.pid 2>/dev/null)
-if [ -n "$pid" ]; then
-    kill "$pid" 2>/dev/null && rm -f /tmp/ldms_${HOSTNAME}.pid
+# 2. Check if the file exists
+if [ -f "$PID_FILE" ]; then
+    # Read the PID
+    TARGET_PID=$(cat "$PID_FILE")
+
+    # Check if the process is actually running to avoid errors
+    if ps -p "$TARGET_PID" > /dev/null; then
+        kill "$TARGET_PID"
+    fi
+
+    rm "$PID_FILE"
 fi
+
+exit 0

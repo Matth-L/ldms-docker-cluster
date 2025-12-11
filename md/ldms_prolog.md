@@ -1,12 +1,18 @@
-# Gathering metrics from user's job
+## LDMS automatic sampler launch with slurm-user as name
 
-Logically, the aggregator will always be up and listening to all the node. The aggregator will be launched by `slurmctld`. Then by running the script `launch_job.sh`, one job per user will be launched and the aggregator will receive them
+### 1\. Launch job
 
-# Step 1 : Launch the aggregator
-
-Connect to `slurmctld` :
 ```sh
-docker exec -it slurmctld bash
+# Inside slurmctld container
+
+srun --mpi=pmix -N 3 sleep 200 &
+squeue
+```
+
+### 2\. Compute node
+
+```sh
+# Inside compute node
 
 OVIS=/opt/ovis
 export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
@@ -15,17 +21,22 @@ export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
 export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
+ldms_ls -h ${HOSTNAME} -x sock -p 10001 -v
 
-ldmsd -x sock:20001 -c /ldms_conf/agg_kafka.conf -l /tmp/ldms_${HOSTNAME}.log &
-# check if the daemon is up
-ldms_ls -h ${HOSTNAME} -x sock -p 20001 -v
 ```
 
-# Step 2 : Creating user in slurm + Launching job
+A script runs on compute nodes when a job starts. It launches an LDMS sampler, ensures detachment, and records the PID.
 
-```sh
-# Ctrl-D
-./scripts/create_user.sh
-./scripts/launch_job.sh
-# it will say that prolog hung, but it works ? just press Enter
-```
+
+### 3\. How does Prolog and Epilog work for LDMS?
+
+The Slurm **Prolog** and **Epilog** scripts are the automation layer that ensures an LDMS sampler runs only when a job is active on a node and cleans up after it.
+
+
+#### A. Prolog Script: Sampler Launch (`/etc/slurm/prolog.sh`)
+
+The Prolog script is executed on every compute node *before* the job step begins. Located [here](../ldms_conf/prolog.d/launch_sampler.sh)
+
+#### B. Epilog Script: Sampler Cleanup (`/etc/slurm/epilog.sh`)
+
+The Epilog script is executed on every compute node *after* the job completes or is canceled. Its job is to ensure that the Sampler daemon launched by the Prolog is correctly shut down and system resources (like the open socket port) are released.  Located [here](../ldms_conf/epilog.d/stop_ldms.sh)

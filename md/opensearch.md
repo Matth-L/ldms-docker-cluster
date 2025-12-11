@@ -1,3 +1,5 @@
+Back to the main README.md : [here](../README.md)
+
 # Connect to the node 
 
 I followed the quickstart here : https://docs.opensearch.org/latest/security/getting-started

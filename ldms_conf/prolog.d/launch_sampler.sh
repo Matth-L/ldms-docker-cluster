@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# source
 OVIS=/opt/ovis
 export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
 export LDMSD_PLUGIN_LIBPATH=$OVIS/lib/ovis-ldms
@@ -9,6 +10,24 @@ export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
 PID_FILE="/tmp/ldmsd_${SLURM_JOBID}.pid"
 LOG_FILE="/tmp/ldmsd_${SLURM_JOBID}.log"
+
+
+# FILE FORMAT
+# The file consists of key-value pairs, one per line, separated by an equals-sign. The recognized keys are:
+# JOBID
+#     An unsigned integer (up to 64-bit) identifying the job. The number zero is reserved to mean that no job is currently running.
+# UID
+#     An unsigned integer (up to 64-bit) representing the User ID associated with the job.
+# APPID
+#     An unsigned integer (up to 64-bit) representing the an application ID for the job.
+# USER
+#     A string representing the username associated with the job.
+# Only the JOBID field is required. The other fields are optional, and will default to zero.
+
+
+echo JOBID=$SLURM_JOB_ID > /var/run/ldms.jobinfo
+echo UID=$SLURM_UID >> /var/run/ldms.jobinfo
+echo USER=$SLURM_JOB_USER >> /var/run/ldms.jobinfo
 
 rm -f "$PID_FILE" "$LOG_FILE"
 

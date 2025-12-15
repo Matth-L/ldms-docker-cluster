@@ -156,19 +156,32 @@ services:
     networks:
       - slurm-network
 
-  opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:3
-    container_name: opensearch-dashboards
-    hostname: opensearch-dashboards
-    volumes:
-      - ./opensearch/opensearch_dashboards.yaml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml 
+  # opensearch-dashboards:
+  #   image: opensearchproject/opensearch-dashboards:3
+  #   container_name: opensearch-dashboards
+  #   hostname: opensearch-dashboards
+  #   volumes:
+  #     - ./opensearch/opensearch_dashboards.yaml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+  #   ports:
+  #     - 5601:5601
+  #   networks:
+  #     - slurm-network
+  #   depends_on:
+  #     - opensearch-node1
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
     ports:
-      - 5601:5601
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
     networks:
       - slurm-network
-    depends_on:
-      - opensearch-node1
-
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=SecureGrafanaPassword1
 
 volumes:
   etc_munge:
@@ -178,6 +191,7 @@ volumes:
   var_run_slurm:
   var_spool_slurm:
   opensearch-data:
+  grafana-storage:
 networks:
   slurm-network:
     driver: bridge

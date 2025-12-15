@@ -2,7 +2,7 @@
 set -euo pipefail
 
 NODES=("slurmctld" "c1" "c2" "c3")
-USERS=("userA" "userB" "userC")
+USERS=("usera" "userb" "userc")
 
 log() { echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"; }
 

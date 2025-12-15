@@ -26,6 +26,7 @@ ldmsd -x sock:20001 -c /ldms_conf/agg_kafka.conf &
 # check if the daemon is up
 ldms_ls -h ${HOSTNAME} -x sock -p 20001 -v
 
+ldms_ls -h ${HOSTNAME} -x sock -p 20001 -l userB-c1/vmstat
 ```
 
 
@@ -71,16 +72,23 @@ This gives me :
 
 ```
 broker:/$ /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server broker:29092
+
 dstat_d61917b
+jobid_3f8abe6
 loadavg_8be3781
 meminfo_ef957a7
-procinterrupts_b5a2941
+procinterrupts_40b0e3c
 procstat2_78935b2
 vmstat_cea2f7e
+
 ```
 
 Then, the one you want to consume :
 
 ```sh
 /opt/kafka/bin/kafka-console-consumer.sh --topic vmstat_cea2f7e --from-beginning --bootstrap-server broker:29092
+
+
+/opt/kafka/bin/kafka-console-consumer.sh --topic jobid_3f8abe6 --bootstrap-server broker:29092
+
 ```

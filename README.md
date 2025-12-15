@@ -73,4 +73,4 @@ docker build -t logstash-with-opensearch-plugins --network=host logstash
 - LDMS manual launch that gathers metrics and store them in `.csv` : [🔗](./md/ldms_csv.md)
 - LDMS manual launch that gathers metrics and launch them in Kafka : [🔗](./md/ldms_kafka.md)
 - LDMS automatic sampler launch when job is is started with Prolog/Epilog: [🔗](./md/ldms_prolog.md)
-- LMDS automatic launch with grafana visualisation : [🔗](./md/final_workflow.md)
+- LDMS automatic launch with grafana visualisation : [🔗](./md/final_workflow.md)

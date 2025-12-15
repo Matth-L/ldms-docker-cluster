@@ -85,62 +85,6 @@ The following scripts will launch the `sleep.sh` script for three different user
 | `userB` | `project2` | `sleep.sh` |
 | `userC` | `project3` | `sleep.sh` |
 
-# STEP 4 : Visualisation
-
-The metrics
-To get the index name of the ldms-metrics, supposed to be `ldms-metrics-*`, see [here](../logstash/pipeline/logstash.conf) :
-
-```sh
-curl -k -XGET -u admin:SecureP@ssword1 https://localhost:9200/_cat/indices?v
-```
-
-To connect to grafana : http://localhost:3000/
-
-user : admin
-password : SecureGrafanaPassword1
-
-IN GRAFANA  :
-
-url : https://opensearch-node1:9200
-
-- auth : basic auth
-- skip tls verify
-- user : admin
-- password : SecureP@ssword1
-
-- index-name : ldms-metrics-*
-
-## QUERY
-
-> Explore
-Query type : Lucene
-
-A
-metric, average, <metric_name>
-group by terms, component_id
-
-B
-metric, count
-group by, terms, component_id
-then_by terms username.keyword
----
-
-Transformation
-
-> Join by fied
-
-Inner
-field, component_id
-
->filter data by values
-username.keyword is equal ${__user.login}
-
->Organize fields by name
-
-hide component_id
-hide count
-
-
 
 # STEP 4: Visualisation (Grafana Configuration)
 
@@ -214,3 +158,7 @@ Apply these steps in the **Transform** tab :
       * Hide: `component_id`
       * Hide: `count`
       * *Action:* Removes useless data for visualization.
+
+To test the filter :
+1. Go to the profile picture at the top.
+2. Change the username (e.g., set it to `usera`).

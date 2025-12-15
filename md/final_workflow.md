@@ -126,18 +126,33 @@ Configure a new OpenSearch data source in Grafana using the following settings:
 
 -----
 
-## 4.3 Panel Query & Transformations (User-Filtered Metric)
+## 4.3 Panel Query & Transformations (Job <-> user aggregation + Filter)
 
-Configure Grafana panel. The query A is a template to be used with query B to get any metrics from LDMS.
+> The query A is a template to be used with query B to get any metrics from LDMS.
 
-### A. Data Queries (Query Type: Lucene)
+### Query A: Metric Retrieval
 
-| Query Label | Metric & Grouping | Purpose |
-| :--- | :--- | :--- |
-| **A** | `metric, average, <metric_name>`<br>`group by terms, component_id` | **Metrics:** Retrieves the average metric value for **all** component IDs. |
-| **B** | `metric, count`<br>`group by, terms, component_id`<br>`then_by terms username.keyword` | **Mapping:** Creates the lookup table linking component IDs to user names. |
+| Setting | Value |
+| :--- | :--- |
+| **Query Label** | `A` |
+| **Query Type** | `Lucene` |
+| **Metric** | `average, <metric_name>` (e.g., `average, load5min`) |
+| **Group By** | `terms, component_id` |
 
-### B. Transformations (Order is Critical)
+### Query B: Component <-> user
+
+
+| Setting | Value |
+| :--- | :--- |
+| **Query Label** | `B` |
+| **Query Type** | `Lucene` |
+| **Metric** | `count` |
+| **Group By** | `terms, component_id` |
+| **Then By** | `terms, username.keyword` |
+
+
+
+### Transformations (Keep the same order)
 
 Apply these steps in the **Transform** tab :
 
@@ -145,19 +160,19 @@ Apply these steps in the **Transform** tab :
 
       * **Type:** `Inner`
       * **Field:** `component_id`
-      * *Action:* Aggregates using `component_id`.
+      * *Why ?:* Aggregates using `component_id`.
 
 2.  **Filter data by values**
 
       * **Field:** `username.keyword`
       * **Condition:** `Is equal`
       * **Value:** `${__user.login}`
-      * *Action:* Filters per username.
+      * *Why ?:* Filters per username.
 
 3.  **Organize fields by name**
       * Hide: `component_id`
       * Hide: `count`
-      * *Action:* Removes useless data for visualization.
+      * *Why ?:* Removes useless data for visualization.
 
 To test the filter :
 1. Go to the profile picture at the top.

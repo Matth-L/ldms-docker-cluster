@@ -1,17 +1,23 @@
 Back to the main README.md : [here](../README.md)
 
-# Step 1 (Preparation)
 
-## Launch the aggregator on `slurmctld`
+# Step 0
 
+If not done already, launch the project and register the cluster.
 ```sh
 docker compose up -d
 ./scripts/register_cluster.sh
+```
 
+
+# Step 1 : Launching the aggregator on `slurmctld`
+
+First, we'll need to launch the aggregator. To do so, connect to `slurmctld`.
+```sh
 docker exec -it slurmctld bash
 ```
 
-Then, you'll need to export LDMS libs and launch the aggregator :
+Load the library and launch the aggregator :
 ```sh
 OVIS=/opt/ovis
 export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
@@ -20,15 +26,18 @@ export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
 export PATH=$OVIS/sbin:$OVIS/bin:$PATH
 export PYTHONPATH=$OVIS/lib/python3.9/site-packages
 
-
 ldmsd -x sock:20001 -c /ldms_conf/agg_kafka.conf -l /tmp/log_agg.txt &
-
-# check if the daemon is up
+```
+The aggregator will be available on socket 20001 and will listen to sampler using the socket 10001.
+To check if the aggregator is up, run :
+```sh
 ldms_ls -h ${HOSTNAME} -x sock -p 20001 -v
 # Ctrl+D
 ```
 
-## Init opensearch with the install demo
+No query are received, which is normal because there isnt any job running on the slurm cluster yet.
+
+# Step 2 : Init opensearch with the install demo
 
 ```sh
 docker exec -it opensearch-node1 bash
@@ -36,77 +45,49 @@ sh plugins/opensearch-security/tools/install_demo_configuration.sh
 #  -> press Yes [y] to all
 # Ctrl-D
 ```
-Something should appear now, if not, wait and then retry :
+
+To check if the node is up , run the following command :
 
 ```sh
 curl -k -XGET -u admin:SecureP@ssword1 https://localhost:9200
-
 ```
 
-It should give something like this :
+If this commands fails, wait a bit then retry. It should give something like this :
 
-```
+```json
 {
   "name" : "opensearch-node1",
   "cluster_name" : "docker-cluster",
   "cluster_uuid" : "XXXXX",
   "version" : {
     "distribution" : "opensearch",
-    "number" : "3.3.2",
-    "build_type" : "tar",
-    "build_hash" : "XXXXX",
-    "build_date" : "XXXXX,
-    "build_snapshot" : false,
-    "lucene_version" : "10.3.1",
-    "minimum_wire_compatibility_version" : "2.19.0",
-    "minimum_index_compatibility_version" : "2.0.0"
+    ...
   },
   "tagline" : "The OpenSearch Project: https://opensearch.org/"
 }
 
 ```
 
-# Step 2 : Launch job
 
-It will launch : 
-- user:userA ; project:project1  ; script:sleep.sh
-- user:userB ; project:project2  ; script:sleep.sh
-- user:userC ; project:project3  ; script:sleep.sh
+# Step 3 : Launch job
+
 
 ```sh
 ./scripts/create_user.sh
 ./scripts/launch_job.sh
 ```
 
-# Step 3 (PLUS d'actu) : Creating user, roles with the UI
+The following scripts will launch the `sleep.sh` script for three different users, associating each execution with a unique project name:
 
-You need to use the sampler `jobid` to get the user name in this proof of concept.
+| User | Project Name | Script Executed |
+| :--- | :--- | :--- |
+| `userA` | `project1` | `sleep.sh` |
+| `userB` | `project2` | `sleep.sh` |
+| `userC` | `project3` | `sleep.sh` |
 
-Connect as an admin to opensearch dashboards, http://localhost:5601
+# STEP 4 : Visualisation
 
-- user : `admin`
-- password : `SecureP@ssword1`
-
-Add an index patern :
-
-> Management > Dashboards Management > Index patterns.
-
-
-Let's try for userA
-
-
-Choose Security, Internal Users, and Create internal user.
-
-- user : `userA`
-- password : `SecureP@ssword1`
-
-Choose Security, Roles, and Create role.
-
-- name : `clusterUser`
-
-# STEP  GRAFANA ACTU MAIS PAS FINI A CORRIGER :
-
-
+The metrics
 To get the index name of the ldms-metrics, supposed to be `ldms-metrics-*`, see [here](../logstash/pipeline/logstash.conf) :
 
 ```sh
@@ -135,7 +116,7 @@ url : https://opensearch-node1:9200
 Query type : Lucene
 
 A
-metric, average, load5min
+metric, average, <metric_name>
 group by terms, component_id
 
 B
@@ -161,5 +142,75 @@ hide count
 
 
 
-https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/add-template-variables/#__user
-org
+# STEP 4: Visualisation (Grafana Configuration)
+
+This step involves verifying that the metrics have been indexed in OpenSearch and configuring the Grafana dashboard to display user-specific metrics using transformations.
+
+## 4.1 Index Verification & Grafana Access
+
+1. confirm the OpenSearch index has been created
+
+**Verify Index Name:**
+
+```sh
+curl -k -XGET -u admin:SecureP@ssword1 https://localhost:9200/_cat/indices?v
+```
+
+**Access Grafana:**
+
+Open : http://localhost:3000/
+
+| Credential | Value |
+| :--- | :--- |
+| **User** | `admin` |
+| **Password** | `SecureGrafanaPassword1` |
+
+-----
+
+## 4.2 OpenSearch Data Source Setup
+
+Configure a new OpenSearch data source in Grafana using the following settings:
+
+| Setting | Value | Configuration Detail |
+| :--- | :--- | :--- |
+| **URL** | `https://opensearch-node1:9200` | Address of the OpenSearch service. |
+| **Auth** | Basic Auth | Use basic authentication. |
+| **Skip TLS Verify** | Checked | Ignore TLS certificate errors  |
+| **User** | `admin` | OpenSearch Security username. |
+| **Password** | `SecureP@ssword1` | OpenSearch Security password. |
+| **Index Name** | `ldms-metrics-*` | Target index for LDMS metrics. |
+
+-----
+
+## 4.3 Panel Query & Transformations (User-Filtered Metric)
+
+Configure Grafana panel. The query A is a template to be used with query B to get any metrics from LDMS.
+
+### A. Data Queries (Query Type: Lucene)
+
+| Query Label | Metric & Grouping | Purpose |
+| :--- | :--- | :--- |
+| **A** | `metric, average, <metric_name>`<br>`group by terms, component_id` | **Metrics:** Retrieves the average metric value for **all** component IDs. |
+| **B** | `metric, count`<br>`group by, terms, component_id`<br>`then_by terms username.keyword` | **Mapping:** Creates the lookup table linking component IDs to user names. |
+
+### B. Transformations (Order is Critical)
+
+Apply these steps in the **Transform** tab :
+
+1.  **Join fields**
+
+      * **Type:** `Inner`
+      * **Field:** `component_id`
+      * *Action:* Aggregates using `component_id`.
+
+2.  **Filter data by values**
+
+      * **Field:** `username.keyword`
+      * **Condition:** `Is equal`
+      * **Value:** `${__user.login}`
+      * *Action:* Filters per username.
+
+3.  **Organize fields by name**
+      * Hide: `component_id`
+      * Hide: `count`
+      * *Action:* Removes useless data for visualization.

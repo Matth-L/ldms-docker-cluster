@@ -15,7 +15,14 @@ docker build -t logstash-with-opensearch-plugins --network=host logstash #buildi
 docker compose up -d
 ```
 
-See [example](#example-) to see how to use this project. 
+
+Depending on your goal:
+
+  * **To see how to use this project** (manual usage), refer to the **[example-list below](#example-)**.
+  * **For automatic launches and Grafana visualization**, see the detailed workflow **[here](./md/final_workflow.md)**.
+
+
+
 
 ## Arborescence explanation
 
@@ -63,6 +70,7 @@ docker build -t logstash-with-opensearch-plugins --network=host logstash
 
 ## Example :
 
-- LDMS manual launch that gathers metrics and store them in `.csv` : [here](./md/ldms_csv.md)
-- LDMS manual launch that gathers metrics and launch them in Kafka : [here](./md/ldms_kafka.md)
-- LDMS automatic sampler launch when job is is started with Prolog/Epilog : [here](./md/ldms_prolog.md)
+- LDMS manual launch that gathers metrics and store them in `.csv` : [🔗](./md/ldms_csv.md)
+- LDMS manual launch that gathers metrics and launch them in Kafka : [🔗](./md/ldms_kafka.md)
+- LDMS automatic sampler launch when job is is started with Prolog/Epilog: [🔗](./md/ldms_prolog.md)
+- LMDS automatic launch with grafana visualisation : [🔗](./md/final_workflow.md)

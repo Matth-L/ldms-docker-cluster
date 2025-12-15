@@ -42,3 +42,17 @@ The Prolog script is executed on every compute node *before* the job step begins
 #### B. Epilog Script: Sampler Cleanup (`/etc/slurm/epilog.sh`)
 
 The Epilog script is executed on every compute node *after* the job completes or is canceled. Its job is to ensure that the Sampler daemon launched by the Prolog is correctly shut down and system resources (like the open socket port) are released.  Located [here](../ldms_conf/epilog.d/stop_ldms.sh)
+
+> /!\ The aggregator is not launched for this you need to run :
+
+```sh
+OVIS=/opt/ovis
+export LD_LIBRARY_PATH=$OVIS/lib:$LD_LIBRARY_PATH
+export LDMSD_PLUGIN_LIBPATH=$OVIS/lib/ovis-ldms
+export ZAP_LIBPATH=$OVIS/lib/ovis-ldms
+export PATH=$OVIS/sbin:$OVIS/bin:$PATH
+export PYTHONPATH=$OVIS/lib/python3.9/site-packages
+
+
+ldmsd -x sock:20001 -c /ldms_conf/agg_kafka.conf &
+```

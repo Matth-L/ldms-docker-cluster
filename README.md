@@ -7,6 +7,8 @@ The goal was to create a basic cluster, and install LDMS made to gather metrics 
 
 Made during my intership at CEA.
 
+![Grafana dashboards](./grafana_dashboards.png "Grafana Dashboards")
+
 ## Quickstart
 
 ```sh
